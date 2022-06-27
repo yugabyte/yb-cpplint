@@ -1856,6 +1856,8 @@ def CheckForHeaderGuard(filename, clean_lines, error):
   endif = ''
   endif_linenum = 0
   for linenum, line in enumerate(raw_lines):
+    if line.strip().startswith('#pragma once'):
+      return
     linesplit = line.split()
     if len(linesplit) >= 2:
       # find the first occurrence of #ifndef and #define, save arg
