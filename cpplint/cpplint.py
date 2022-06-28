@@ -1824,7 +1824,7 @@ def GetHeaderGuardCPPVariable(filename):
 
 
 def CheckForHeaderGuard(filename, clean_lines, error):
-  """Checks that the file contains a header guard.
+  """Checks that the file contains a "#pragma once" or a header guard.
 
   Logs an error if no #ifndef header guard is present.  For other
   headers, checks that the full pathname is used.
@@ -1877,8 +1877,8 @@ def CheckForHeaderGuard(filename, clean_lines, error):
 
   if not ifndef or not define or ifndef != define:
     error(filename, 0, 'build/header_guard', 5,
-          'No #ifndef header guard found, suggested CPP variable is: %s' %
-          cppvar)
+          'No "#pragma once" or #ifndef header guard found. "#pragma once" is preferred, but '
+          'the suggested CPP variable for header guard is: %s' % cppvar)
     return
 
   # The guard should be PATH_FILE_H_, but we also allow PATH_FILE_H__
