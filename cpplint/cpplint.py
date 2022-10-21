@@ -5859,7 +5859,7 @@ def CheckRegisterFlagValidator(filename, clean_lines, linenum, error):
   if match:
     error(filename, linenum, 'build/gflag_register_flag_validator',
           4,  # 4 = high confidence
-          'Please use DEFINE_validator instead of RegisterFlagValidator.')
+          'Please use DEFINE_validator from "yb/util/flags.h" instead of RegisterFlagValidator.')
 
 
 
