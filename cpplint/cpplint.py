@@ -196,6 +196,7 @@ _ERROR_CATEGORIES = [
     'build/printf_format',
     'build/storage_class',
     'build/gflag_default_api',
+    'build/gflag_register_flag_validator',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5704,7 +5705,7 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
 _RE_PATTERN_GFLAG_DEFAULT_API = re.compile(r'DEFINE_(bool|int32|int64|uint64|double|string)')
 
 
-def CheckGflagDefaultApiCheckMakePairUsesDeduction(filename, clean_lines, linenum, error):
+def CheckGflagDefaultApi(filename, clean_lines, linenum, error):
   """Check if we're still using the default gflag DEFINE flag api.
 
   We've added a new set of APIs for runtime vs non-runtime flags in D19978, which should be used by
@@ -5840,6 +5841,25 @@ def CheckRedundantOverrideOrFinal(filename, clean_lines, linenum, error):
           ('"override" is redundant since function is '
            'already declared as "final"'))
 
+_RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API = re.compile(r'RegisterFlagValidator')
+
+def CheckRegisterFlagValidator(filename, clean_lines, linenum, error):
+  """Check if we're still using the default gflag RegisterFlagValidator.
+
+  We should be using DEFINE_validator moving forward.
+
+  Args:
+    filename: The name of the current file.
+    clean_lines: A CleansedLines instance containing the file.
+    linenum: The number of the line to check.
+    error: The function to call with any errors found.
+  """
+  line = clean_lines.elided[linenum]
+  match = _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API.search(line)
+  if match:
+    error(filename, linenum, 'build/gflag_register_flag_validator',
+          4,  # 4 = high confidence
+          'Please use DEFINE_validator instead of RegisterFlagValidator.')
 
 
 
@@ -5947,9 +5967,10 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckPosixThreading(filename, clean_lines, line, error)
   CheckInvalidIncrement(filename, clean_lines, line, error)
   CheckMakePairUsesDeduction(filename, clean_lines, line, error)
-  CheckGflagDefaultApiCheckMakePairUsesDeduction(filename, clean_lines, line, error)
+  CheckGflagDefaultApi(filename, clean_lines, line, error)
   CheckRedundantVirtual(filename, clean_lines, line, error)
   CheckRedundantOverrideOrFinal(filename, clean_lines, line, error)
+  CheckRegisterFlagValidator(filename, clean_lines, line, error)
   for check_fn in extra_check_functions:
     check_fn(filename, clean_lines, line, error)
 
