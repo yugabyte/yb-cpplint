@@ -196,7 +196,7 @@ _ERROR_CATEGORIES = [
     'build/printf_format',
     'build/storage_class',
     'build/gflag_default_api',
-    'build/gflag_register_flag_validator',
+    'build/flag_validator',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5717,6 +5717,11 @@ def CheckGflagDefaultApi(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
+
+  # flag_tags.h is the only file allowed to use default gflag macros.
+  if filename.endswith("src/yb/util/flags/flag_tags.h"):
+    return
+
   line = clean_lines.elided[linenum]
   match = _RE_PATTERN_GFLAG_DEFAULT_API.search(line)
   if match:
@@ -5842,11 +5847,11 @@ def CheckRedundantOverrideOrFinal(filename, clean_lines, linenum, error):
            'already declared as "final"'))
 
 _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API = re.compile(r'RegisterFlagValidator')
+_RE_PATTERN_INCLUDE_GFLAG_API = re.compile(r'#include\s+<gflags/gflags.h>')
 
-def CheckRegisterFlagValidator(filename, clean_lines, linenum, error):
-  """Check if we're still using the default gflag RegisterFlagValidator.
-
-  We should be using DEFINE_validator moving forward.
+def CheckFlags(filename, clean_lines, linenum, error):
+  """Check if we're still using the default gflag RegisterFlagValidator or including gflags.h.
+  We should be using DEFINE_validator and include flags.h moving forward.
 
   Args:
     filename: The name of the current file.
@@ -5854,13 +5859,22 @@ def CheckRegisterFlagValidator(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
-  line = clean_lines.elided[linenum]
-  match = _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API.search(line)
-  if match:
-    error(filename, linenum, 'build/gflag_register_flag_validator',
-          4,  # 4 = high confidence
-          'Please use DEFINE_validator from "yb/util/flags.h" instead of RegisterFlagValidator.')
 
+  line = clean_lines.elided[linenum]
+  # flags.h is the only file allowed to use RegisterFlagValidator.
+  if not filename.endswith("src/yb/util/flags.h"):
+    match = _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API.search(line)
+    if match:
+      error(filename, linenum, 'build/flag_validator',
+            4,  # 4 = high confidence
+            'Please use DEFINE_validator from "yb/util/flags.h" instead of RegisterFlagValidator')
+
+  if "src/yb/util/flags/" not in filename:
+    match = _RE_PATTERN_INCLUDE_GFLAG_API.search(line)
+    if match:
+      error(filename, linenum, 'build/flag_validator',
+            4,  # 4 = high confidence
+            'Please include "yb/util/flags.h" instead of <gflags/gflags.h>')
 
 
 # Returns true if we are at a new block, and it is directly
@@ -5970,7 +5984,7 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckGflagDefaultApi(filename, clean_lines, line, error)
   CheckRedundantVirtual(filename, clean_lines, line, error)
   CheckRedundantOverrideOrFinal(filename, clean_lines, line, error)
-  CheckRegisterFlagValidator(filename, clean_lines, line, error)
+  CheckFlags(filename, clean_lines, line, error)
   for check_fn in extra_check_functions:
     check_fn(filename, clean_lines, line, error)
 
