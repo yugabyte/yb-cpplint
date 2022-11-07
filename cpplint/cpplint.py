@@ -5702,7 +5702,7 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
             'Add #include ' + required_header_unstripped + ' for ' + template)
 
 
-_RE_PATTERN_GFLAG_DEFAULT_API = re.compile(r'DEFINE_(bool|int32|int64|uint64|double|string)')
+_RE_PATTERN_GFLAG_DEFAULT_API = re.compile(r'DEFINE_(bool|int32|u?int64|double|string)')
 
 
 def CheckGflagDefaultApi(filename, clean_lines, linenum, error):
