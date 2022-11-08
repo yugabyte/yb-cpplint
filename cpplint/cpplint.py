@@ -5717,6 +5717,11 @@ def CheckGflagDefaultApi(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
+  # flag_tags.h defines the runtime and non-runtime macros, so it is expected to use the bare DEFINE
+  # there.
+  if filename.endswith("flag_tags.h"):
+    return
+
   line = clean_lines.elided[linenum]
   match = _RE_PATTERN_GFLAG_DEFAULT_API.search(line)
   if match:
