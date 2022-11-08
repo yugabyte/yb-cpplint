@@ -5717,7 +5717,6 @@ def CheckGflagDefaultApi(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
-
   # flag_tags.h is the only file allowed to use default gflag macros.
   if filename.endswith("src/yb/util/flags/flag_tags.h"):
     return
@@ -5847,7 +5846,7 @@ def CheckRedundantOverrideOrFinal(filename, clean_lines, linenum, error):
            'already declared as "final"'))
 
 _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API = re.compile(r'RegisterFlagValidator')
-_RE_PATTERN_INCLUDE_GFLAG_API = re.compile(r'#include\s+<gflags/gflags.h>')
+_RE_PATTERN_INCLUDE_GFLAG_API = re.compile(r'^\s*#include\s+<gflags/gflags.h>')
 
 def CheckFlags(filename, clean_lines, linenum, error):
   """Check if we're still using the default gflag RegisterFlagValidator or including gflags.h.
@@ -5859,7 +5858,6 @@ def CheckFlags(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
-
   line = clean_lines.elided[linenum]
   # flags.h is the only file allowed to use RegisterFlagValidator.
   if not filename.endswith("src/yb/util/flags.h"):
