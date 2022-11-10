@@ -196,7 +196,7 @@ _ERROR_CATEGORIES = [
     'build/printf_format',
     'build/storage_class',
     'build/gflag_default_api',
-    'build/flag_validator',
+    'build/flags',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5863,14 +5863,14 @@ def CheckFlags(filename, clean_lines, linenum, error):
   if not filename.endswith("src/yb/util/flags.h"):
     match = _RE_PATTERN_GFLAG_REGISTER_FLAG_VALIDATOR_API.search(line)
     if match:
-      error(filename, linenum, 'build/flag_validator',
+      error(filename, linenum, 'build/flags',
             4,  # 4 = high confidence
             'Please use DEFINE_validator from "yb/util/flags.h" instead of RegisterFlagValidator')
 
   if "src/yb/util/flags/" not in filename:
     match = _RE_PATTERN_INCLUDE_GFLAG_API.search(line)
     if match:
-      error(filename, linenum, 'build/flag_validator',
+      error(filename, linenum, 'build/flags',
             4,  # 4 = high confidence
             'Please include "yb/util/flags.h" instead of <gflags/gflags.h>')
 
