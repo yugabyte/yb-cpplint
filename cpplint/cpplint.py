@@ -5867,7 +5867,7 @@ def CheckFlags(filename, clean_lines, linenum, error):
             4,  # 4 = high confidence
             'Please use DEFINE_validator from "yb/util/flags.h" instead of RegisterFlagValidator')
 
-  if "src/yb/util/flags/" not in filename:
+  if "src/yb/util/flags" not in filename:
     match = _RE_PATTERN_INCLUDE_GFLAG_API.search(line)
     if match:
       error(filename, linenum, 'build/flags',
