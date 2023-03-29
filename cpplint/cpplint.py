@@ -197,6 +197,7 @@ _ERROR_CATEGORIES = [
     'build/storage_class',
     'build/gflag_default_api',
     'build/flags',
+    'build/std_thread',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5874,6 +5875,26 @@ def CheckFlags(filename, clean_lines, linenum, error):
             4,  # 4 = high confidence
             'Please include "yb/util/flags.h" instead of <gflags/gflags.h>')
 
+_RE_PATTERN_STD_THREAD = re.compile(r'std::thread[^:]')
+
+def CheckStdThread(filename, clean_lines, linenum, error):
+  """Check if we're still using std::thread.
+  We should be using yb::Thread instead of std::thread in yugabyte product code.
+  Other std thread classes like std::thread::id is ok to use.
+
+  Args:
+    filename: The name of the current file.
+    clean_lines: A CleansedLines instance containing the file.
+    linenum: The number of the line to check.
+    error: The function to call with any errors found.
+  """
+  if "thread" not in filename and "test" not in filename:
+    line = clean_lines.elided[linenum]
+    match = _RE_PATTERN_STD_THREAD.search(line)
+    if match:
+      error(filename, linenum, 'build/std_thread',
+            4,  # 4 = high confidence
+            'Please use yb::Thread instead of std::thread in yugabyte product code')
 
 # Returns true if we are at a new block, and it is directly
 # inside of a namespace.
@@ -5983,6 +6004,7 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckRedundantVirtual(filename, clean_lines, line, error)
   CheckRedundantOverrideOrFinal(filename, clean_lines, line, error)
   CheckFlags(filename, clean_lines, line, error)
+  CheckStdThread(filename, clean_lines, line, error)
   for check_fn in extra_check_functions:
     check_fn(filename, clean_lines, line, error)
 
