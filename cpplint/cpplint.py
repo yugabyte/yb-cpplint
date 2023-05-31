@@ -1759,6 +1759,7 @@ def CheckForCopyright(filename, lines, error):
   YUGABYTE_COPYRIGHT = "// Copyright (c) YugabyteDB, Inc."
   ALLOWED_COPYRIGHT_LINES = [YUGABYTE_COPYRIGHT,
                              "// Copyright (c) YugaByte, Inc.",
+                             "// Copyright (c) Yugabyte, Inc.",
                              "// Portions Copyright (c) YugaByte, Inc.",
                              "// Portions Copyright (c) Yugabyte, Inc.",
                              "// regarding copyright ownership. The ASF licenses this file",
