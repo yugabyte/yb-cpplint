@@ -1762,6 +1762,7 @@ def CheckForCopyright(filename, lines, error):
                              "// Copyright (c) Yugabyte, Inc.",
                              "// Portions Copyright (c) YugaByte, Inc.",
                              "// Portions Copyright (c) Yugabyte, Inc.",
+                             "// Portions Copyright (c) YugabyteDB, Inc.",
                              "// regarding copyright ownership. The ASF licenses this file",
                              "// Copyright (c) 20XX The Chromium Authors. All rights reserved",
                              "// Copyright (c) 20XX The LevelDB Authors. All rights reserved",
