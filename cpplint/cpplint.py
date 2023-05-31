@@ -1756,7 +1756,7 @@ def CheckForCopyright(filename, lines, error):
 
   # We'll say it should occur by line 10. Don't forget there's a
   # dummy line at the front.
-  YUGABYTE_COPYRIGHT = "// Copyright (c) Yugabyte, Inc."
+  YUGABYTE_COPYRIGHT = "// Copyright (c) YugabyteDB, Inc."
   ALLOWED_COPYRIGHT_LINES = [YUGABYTE_COPYRIGHT,
                              "// Copyright (c) YugaByte, Inc.",
                              "// Portions Copyright (c) YugaByte, Inc.",
