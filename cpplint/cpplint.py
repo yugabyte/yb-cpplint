@@ -444,6 +444,7 @@ _YB_THIRD_PARTY_HEADERS_INCLUDED_USING_ANGLE_BRACKETS = frozenset([
     ])
 
 _YB_THIRD_PARTY_HEADER_PREFIXES_USING_ANGLE_BRACKETS = tuple([
+    'absl',
     'boost',
     'google',
     'gflags',
