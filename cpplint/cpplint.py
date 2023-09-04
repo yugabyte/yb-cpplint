@@ -5994,7 +5994,15 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckStyle(filename, clean_lines, line, file_extension, nesting_state, error)
   CheckLanguage(filename, clean_lines, line, file_extension, include_state,
                 nesting_state, error)
-  CheckForNonConstReference(filename, clean_lines, line, nesting_state, error)
+
+  # Non-const reference checking was disabled on 09/03/2023 by mbautin.
+  # Google C++ style guide at https://google.github.io/styleguide/cppguide.html says:
+  # > ... non-optional output and input/output parameters should usually be references (which cannot
+  # > be null).
+  # Therefore we consdider non-const references to be allowed.
+  if False:
+    CheckForNonConstReference(filename, clean_lines, line, nesting_state, error)
+
   CheckAsteriskAndAmpersandSpacing(filename, clean_lines, line, nesting_state, error)
   CheckForNonStandardConstructs(filename, clean_lines, line,
                                 nesting_state, error)
