@@ -1757,11 +1757,13 @@ def CheckForCopyright(filename, lines, error):
 
   # We'll say it should occur by line 10. Don't forget there's a
   # dummy line at the front.
-  YUGABYTE_COPYRIGHT = "// Copyright (c) Yugabyte, Inc."
+  YUGABYTE_COPYRIGHT = "// Copyright (c) YugabyteDB, Inc."
   ALLOWED_COPYRIGHT_LINES = [YUGABYTE_COPYRIGHT,
                              "// Copyright (c) YugaByte, Inc.",
+                             "// Copyright (c) Yugabyte, Inc.",
                              "// Portions Copyright (c) YugaByte, Inc.",
                              "// Portions Copyright (c) Yugabyte, Inc.",
+                             "// Portions Copyright (c) YugabyteDB, Inc.",
                              "// regarding copyright ownership. The ASF licenses this file",
                              "// Copyright (c) 20XX The Chromium Authors. All rights reserved",
                              "// Copyright (c) 20XX The LevelDB Authors. All rights reserved",
@@ -5896,8 +5898,7 @@ def CheckStdThread(filename, clean_lines, linenum, error):
       error(filename, linenum, 'build/std_thread',
             4,  # 4 = high confidence
             'Please use yb::Thread instead of std::thread in yugabyte product code')
-
-
+   
 _RE_PATTERN_INCLUDE_GLOG_API = re.compile(r'^\s*#include\s+<glog/logging.h>')
 
 def CheckGlog(filename, clean_lines, linenum, error):
@@ -6015,7 +6016,15 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckStyle(filename, clean_lines, line, file_extension, nesting_state, error)
   CheckLanguage(filename, clean_lines, line, file_extension, include_state,
                 nesting_state, error)
-  CheckForNonConstReference(filename, clean_lines, line, nesting_state, error)
+
+  # Non-const reference checking was disabled on 09/03/2023 by mbautin.
+  # Google C++ style guide at https://google.github.io/styleguide/cppguide.html says:
+  # > ... non-optional output and input/output parameters should usually be references (which cannot
+  # > be null).
+  # Therefore we consdider non-const references to be allowed.
+  if False:
+    CheckForNonConstReference(filename, clean_lines, line, nesting_state, error)
+
   CheckAsteriskAndAmpersandSpacing(filename, clean_lines, line, nesting_state, error)
   CheckForNonStandardConstructs(filename, clean_lines, line,
                                 nesting_state, error)
