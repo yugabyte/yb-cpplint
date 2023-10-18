@@ -198,6 +198,7 @@ _ERROR_CATEGORIES = [
     'build/gflag_default_api',
     'build/flags',
     'build/std_thread',
+    'build/glog',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5896,6 +5897,28 @@ def CheckStdThread(filename, clean_lines, linenum, error):
             4,  # 4 = high confidence
             'Please use yb::Thread instead of std::thread in yugabyte product code')
 
+
+_RE_PATTERN_INCLUDE_GLOG_API = re.compile(r'^\s*#include\s+<glog/logging.h>')
+
+def CheckGlog(filename, clean_lines, linenum, error):
+  """Check if we're including glog/logging.h.
+  We should include yb/util/logging.h moving forward.
+
+  Args:
+    filename: The name of the current file.
+    clean_lines: A CleansedLines instance containing the file.
+    linenum: The number of the line to check.
+    error: The function to call with any errors found.
+  """
+  line = clean_lines.elided[linenum]
+
+  if "yb/util/logging.h" not in filename:
+    match = _RE_PATTERN_INCLUDE_GLOG_API.search(line)
+    if match:
+      error(filename, linenum, 'build/glog',
+            4,  # 4 = high confidence
+            'Please include "yb/util/logging.h" instead of <glog/logging.h>')
+
 # Returns true if we are at a new block, and it is directly
 # inside of a namespace.
 def IsBlockInNameSpace(nesting_state, is_forward_declaration):
@@ -6005,6 +6028,7 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckRedundantOverrideOrFinal(filename, clean_lines, line, error)
   CheckFlags(filename, clean_lines, line, error)
   CheckStdThread(filename, clean_lines, line, error)
+  CheckGlog(filename, clean_lines, line, error)
   for check_fn in extra_check_functions:
     check_fn(filename, clean_lines, line, error)
 
