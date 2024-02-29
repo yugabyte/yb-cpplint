@@ -3187,12 +3187,6 @@ def CheckComment(line, filename, linenum, next_line_start, error):
       comment = line[commentpos:]
       match = _RE_PATTERN_TODO.match(comment)
       if match:
-        # One whitespace is correct; zero whitespace is handled elsewhere.
-        leading_whitespace = match.group(1)
-        if len(leading_whitespace) > 1:
-          error(filename, linenum, 'whitespace/todo', 2,
-                'Too many spaces before TODO')
-
         username = match.group(2)
         if not username:
           error(filename, linenum, 'readability/todo', 2,
