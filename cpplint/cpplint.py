@@ -296,6 +296,7 @@ _ERROR_CATEGORIES = [
     'readability/utf8',
     'runtime/arrays',
     'runtime/casting',
+    'runtime/const_reference_view',
     'runtime/explicit',
     'runtime/int',
     'runtime/init',
@@ -2910,6 +2911,11 @@ def CheckForNonStandardConstructs(filename, clean_lines, linenum,
     error(filename, linenum, 'runtime/member_string_references', 2,
           'const string& members are dangerous. It is much better to use '
           'alternatives, such as pointers or simple constants.')
+
+  if Search(r'\Wconst\s+((std::)?(string_view|span\s*<[^>]+>)|((yb|rocksdb)::)?Slice)\s*&', line):
+    error(filename, linenum, 'runtime/const_reference_view', 2,
+          'Do not use const references to view types, such as std::string_view or Slice. These '
+          'classes should be passed by value instead.')
 
   # Everything else in this function operates on class declarations.
   # Return early if the top of the nesting stack is not a class, or if
