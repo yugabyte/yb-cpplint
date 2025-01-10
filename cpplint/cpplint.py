@@ -4009,6 +4009,7 @@ def CheckTrailingSemicolon(filename, clean_lines, linenum, error):
     #  - Lambdas
     #  - alignas specifier with anonymous structs
     #  - decltype
+    #  - requires
     closing_brace_pos = match.group(1).rfind(')')
     opening_parenthesis = ReverseCloseExpression(
         clean_lines, linenum, closing_brace_pos)
@@ -4026,6 +4027,12 @@ def CheckTrailingSemicolon(filename, clean_lines, linenum, error):
           Search(r'\bdecltype$', line_prefix) or
           Search(r'\s+=\s*$', line_prefix)):
         match = None
+
+    if match:
+        keyword = Search(r'\b([a-z]+)\s*$', line_prefix)
+        if keyword and keyword.group(1) in ('requires',):
+          match = None
+
     if (match and
         opening_parenthesis[1] > 1 and
         Search(r'\]\s*$', clean_lines.elided[opening_parenthesis[1] - 1])):
