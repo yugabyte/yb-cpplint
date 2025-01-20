@@ -1859,6 +1859,7 @@ def CheckForCopyright(filename, lines, error):
                              "// Copyright (C) 19XX and onwards Google, Inc.",
                              "// Copyright (c) 20XX, Google Inc.",
                              "/* Copyright (c) 20XX, Google Inc.",
+                             "/* Copyright (c) 20XX-20XX, Google Inc.",
                              "// Copyright 20XX Google Inc.",
                              "// Copyright 20XX and onwards Google, Inc.",
                             ]
