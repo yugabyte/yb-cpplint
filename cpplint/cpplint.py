@@ -1875,14 +1875,14 @@ def CheckForCopyright(filename, lines, error):
       if fixed_line in ALLOWED_COPYRIGHT_LINES:
         break
       error(filename,
-            0,
+            1,
             'legal/copyright',
             5,
             'Invalid copyright message: "{0}". Should be: "{1}"'.format(line_str,
                                                                         YUGABYTE_COPYRIGHT))
       break
   else:                       # means no copyright line was found
-    error(filename, 0, 'legal/copyright', 5,
+    error(filename, 1, 'legal/copyright', 5,
           'No copyright message found.  '
           'You should have a line: {0}'.format(YUGABYTE_COPYRIGHT))
 
@@ -1987,7 +1987,7 @@ def CheckForHeaderGuard(filename, clean_lines, error):
       endif_linenum = linenum
 
   if not ifndef or not define or ifndef != define:
-    error(filename, 0, 'build/header_guard', 5,
+    error(filename, 1, 'build/header_guard', 5,
           'No "#pragma once" or #ifndef header guard found. "#pragma once" is preferred, but '
           'the suggested CPP variable for header guard is: %s' % cppvar)
     return
