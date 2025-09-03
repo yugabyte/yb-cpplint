@@ -278,6 +278,7 @@ _ERROR_CATEGORIES = [
     'build/flags',
     'build/std_thread',
     'build/glog',
+    'build/boost_optional',
     'legal/copyright',
     'readability/alt_tokens',
     'readability/braces',
@@ -5979,7 +5980,22 @@ def CheckStdThread(filename, clean_lines, linenum, error):
       error(filename, linenum, 'build/std_thread',
             4,  # 4 = high confidence
             'Please use yb::Thread instead of std::thread in yugabyte product code')
-   
+
+def CheckBoostOptional(filename, clean_lines, linenum, error):
+  """Check for any use of boost::optional.
+  Args:
+    filename: The name of the current file.
+    clean_lines: A CleansedLines instance containing the file.
+    linenum: The number of the line to check.
+    error: The function to call with any errors found.
+  """
+  line = clean_lines.elided[linenum]
+  m = Search(r'boost::optional', line)
+  if m:
+    error(filename, linenum, 'build/boost_optional',
+          4,  # 4 = high confidence
+          'Please use std::optional instead of boost::optional in new code')
+
 _RE_PATTERN_INCLUDE_GLOG_API = re.compile(r'^\s*#include\s+<glog/logging.h>')
 
 def CheckGlog(filename, clean_lines, linenum, error):
@@ -6119,6 +6135,7 @@ def ProcessLine(filename, file_extension, clean_lines, line,
   CheckFlags(filename, clean_lines, line, error)
   CheckStdThread(filename, clean_lines, line, error)
   CheckGlog(filename, clean_lines, line, error)
+  CheckBoostOptional(filename, clean_lines, line, error)
   for check_fn in extra_check_functions:
     check_fn(filename, clean_lines, line, error)
 
