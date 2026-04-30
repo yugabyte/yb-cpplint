@@ -1,3 +1,5 @@
+**This repository is no longer maintained. Update src/lint/cpplint.py in yugabyte-db instead.**
+
 Yugabyte fork of cpplint
 ========================
 
